@@ -1,13 +1,7 @@
 #include "conproddialog.h"
 #include "ui_conproddialog.h"
-#include "myConstants.h"
 #include "QDebug"
 
-// BufferSize: maximum bytes that can be stored
-char buffer[BufferSize];
-
-QSemaphore freeBytes(BufferSize);
-QSemaphore usedBytes;
 
 ConProdDialog::ConProdDialog(QWidget *parent) :
     QDialog(parent),
@@ -15,14 +9,19 @@ ConProdDialog::ConProdDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
+	dataSize = 1000;
+	_buffSize = 8192;
+	_buffer = new char [_buffSize];
+	freeBytes = new QSemaphore(100);
+	usedBytes = new QSemaphore(100);
+
     // progress bar range setup
-    ui->producerProgressBar->setRange(0, DataSize);
-    ui->consumerProgressBar->setRange(0, DataSize);
-    ui->bufferProgressBar->setRange(0, BufferSize);
+	ui->producerProgressBar->setRange(0, dataSize);
+	ui->consumerProgressBar->setRange(0, dataSize);
+	ui->bufferProgressBar->setRange(0, 100);
 
-
-	mProducer = new Producer2();
-	mConsumer = new Consumer2();
+	mProducer = new Producer2(freeBytes, usedBytes, _buffer, _buffSize, dataSize);
+	mConsumer = new Consumer2(freeBytes, usedBytes, _buffer, _buffSize, dataSize);
 
 
 	thread1 = new QThread();
@@ -44,8 +43,8 @@ ConProdDialog::ConProdDialog(QWidget *parent) :
 
 
     // connect signal/slot for the buffer progress bar
-    connect(mConsumer, SIGNAL(bufferFillCountChanged(int)),
-              this, SLOT(onBufferValueChanged(int)));
+	connect(mConsumer, SIGNAL(bufferFillCountChanged(int)),
+			  this, SLOT(onBufferValueChanged(int)));
     connect(mProducer, SIGNAL(bufferFillCountChanged(int)),
               this, SLOT(onBufferValueChanged(int)));
 
@@ -58,6 +57,9 @@ ConProdDialog::ConProdDialog(QWidget *parent) :
 
 ConProdDialog::~ConProdDialog()
 {
+	delete freeBytes;
+	delete usedBytes;
+	delete _buffer;
     delete ui;
 }
 

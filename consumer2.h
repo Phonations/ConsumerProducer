@@ -7,16 +7,14 @@
 #define CONSUMER2_H
 
 #include <QObject>
-#include <QTime>
+#include <QSemaphore>
 
-#include "myConstants.h"
-#include "common.h"
 
 class Consumer2 : public QObject
 {
 	Q_OBJECT
 public:
-	explicit Consumer2(QObject *parent = 0);
+	explicit Consumer2(QSemaphore * freeBytes, QSemaphore * usedBytes, char * buffer, int buffSize, int dataSize, QObject *parent = 0);
 
 signals:
 	void bufferFillCountChanged(int cCount);
@@ -27,6 +25,13 @@ signals:
 
 public slots:
 	void process();
+
+private:
+	char * _buffer;
+	int _buffSize;
+	int _dataSize;
+	QSemaphore * _freeBytes;
+	QSemaphore * _usedBytes;
 
 };
 

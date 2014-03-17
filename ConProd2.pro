@@ -18,8 +18,6 @@ SOURCES += main.cpp\
 		producer2.cpp
 
 HEADERS  += conproddialog.h \
-		common.h \
-		myConstants.h \
 		consumer2.h \
 		producer2.h
 

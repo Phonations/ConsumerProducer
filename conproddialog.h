@@ -36,6 +36,14 @@ private:
 	Consumer2 *mConsumer;
 	QThread* thread1;
 	QThread* thread2;
+
+	QSemaphore * freeBytes;
+	QSemaphore * usedBytes;
+
+	int _buffSize;
+	char * _buffer;
+
+	int dataSize;
 };
 
 #endif // CONPRODDIALOG_H
