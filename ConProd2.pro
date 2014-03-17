@@ -14,13 +14,13 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         conproddialog.cpp \
-    consumer.cpp \
-    producer.cpp
+		consumer2.cpp \
+		producer2.cpp
 
 HEADERS  += conproddialog.h \
-    consumer.h \
-    producer.h \
-    common.h \
-    myConstants.h
+		common.h \
+		myConstants.h \
+		consumer2.h \
+		producer2.h
 
 FORMS    += conproddialog.ui
